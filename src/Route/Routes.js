@@ -7,7 +7,7 @@ const auth = require('../Middleware/Authentication and Authorization')
 
 
 router.get("/test", (req, res) => {
-    res.send("welcome to wysa sleep server")
+    res.send("welcome to wysa server")
 })
 
 

@@ -29,105 +29,44 @@ const UserRegistration = async function (req, res) {
         }
         // ****************************************  Use Object Destructuring      ******************************************************* *//
 
-        let {
-            firstName,
-            lastName,
-            emailID,
-            phoneNumber,
-            password
-        } = requestBody;
+       const {nickname, password}  = requestBody;
 
 
 
         // ****************************** Check Validaton **********************************************************************************//
 
-        if (!Validator.isValidValue(firstName)) {
+        if (!Validator.isValidValue(nickname)) {
             return res.status(400).send({
                 status: false,
-                message: "First name is required ",
+                message: "nick name is required ",
             });
         }
 
-        if (!Validator.isValidCharacters(firstName)) {
-            return res.status(400).send({
-                status: false,
-                message: "Only alphabets allowed ",
-            });
-        }
-
-        if (!Validator.isValidValue(lastName)) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "last name is required "
-                });
-        }
-
-        if (!Validator.isValidCharacters(lastName)) {
+        if (!Validator.isValidCharacters(nickname)) {
             return res.status(400).send({
                 status: false,
                 message: "Only alphabets allowed ",
             });
         }
 
-        if (!Validator.isValidValue(emailID)) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "emailID address is required"
-                });
-        }
-
-        if (!Validator.isValidEmail(emailID)) {
-            return res.status(400).send({
-                status: false,
-                message: "Please enter a valid emailID address",
-            });
-        }
-        // ****************************** check for isUniqueEmailID ************************************************************//
-        const isUniqueEmailID = await UserModel.findOne({
-            emailID
+     
+        // ****************************** check for isUnique nickname ************************************************************//
+        const isUniquenickname= await UserModel.findOne({
+            nickname  
         });
 
-        if (isUniqueEmailID) {
+        if (isUniquenickname) {
             return res
                 .status(400)
                 .send({
                     status: false,
-                    message: "emailID address already exist"
+                    message: "nickname  already exist"
                 });
         }
 
-        if (!Validator.isValidValue(phoneNumber)) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "phoneNumber number is required"
-                });
-        }
-
-        if (!Validator.isValidPhone(phoneNumber)) {
-            return res.status(400).send({
-                status: false,
-                message: "Please enter a valid  10 digit phoneNumber ",
-            });
-        }
+    
         // ****************************** check for isUniquephoneNumber ***************************************************************//
-        const isUniquephoneNumber = await UserModel.findOne({
-            phoneNumber
-        });
-
-        if (isUniquephoneNumber) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "phoneNumber number already exist"
-                });
-        }
+       
 
         if (!Validator.isValidValue(password)) {
             return res
@@ -144,16 +83,14 @@ const UserRegistration = async function (req, res) {
                 message: "password should be of 8 to 15 characters and  must have 1 letter and 1 number",
             });
         }
-        // ****************************** get password ****************************************************************************************//
+        // ****************************** encrpyt password ****************************************************************************************//
 
         const salt_round = await bcrypt.genSalt(10);
         const encryptedpassword = await bcrypt.hash(password, salt_round);
 
         const userData = {
-            firstName: firstName.trim(),
-            lastName: lastName.trim(),
-            emailID: emailID.trim(),
-            phoneNumber: phoneNumber.trim(),
+            nickname: nickname.trim(),
+            
             password: encryptedpassword,
         };
 
@@ -192,26 +129,19 @@ const UserLogin = async function (req, res) {
             });
         }
 
-        const userName = requestBody.emailID;
+        const nickname = requestBody.nickname;
         const password = requestBody.password;
 
-        if (!Validator.isValidValue(userName)) {
+        if (!Validator.isValidValue(nickname)) {
             return res
                 .status(400)
                 .send({
                     status: false,
-                    message: "emailID is required"
+                    message: "nickname is required"
                 });
         }
 
-        if (!Validator.isValidEmail(userName)) {
-            return res
-                .status(400)
-                .send({
-                    status: false,
-                    message: "Enter a valid emailID "
-                });
-        }
+      
 
         if (!Validator.isValidValue(password)) {
             return res
@@ -230,7 +160,7 @@ const UserLogin = async function (req, res) {
         }
         // ****************************** find Userdetails in database *************************************************************//
         const userDetails = await UserModel.findOne({
-            emailID: userName
+            nickname: nickname
         });
 
         if (!userDetails) {
@@ -238,7 +168,7 @@ const UserLogin = async function (req, res) {
                 .status(404)
                 .send({
                     status: false,
-                    message: "No user found by emailID"
+                    message: "No user found by nickname"
                 });
         }
 

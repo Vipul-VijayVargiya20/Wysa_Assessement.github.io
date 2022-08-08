@@ -3,29 +3,18 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema(
     {
 
-        firstName: {
+        nickname: {
             type: String,
             required : true,
-            maxlength: 32
+            maxlength: 15
         },
-        lastName: {
-            type: String,
-            maxlength: 32
-        },
-        emailID: {
-            type: String,
-            required : true,
-            trim: true
-            
-        },
+      
+        
         password: {
             type: String,
             required : true,
         },
-        phoneNumber: {
-            type: String,
-            required : true,
-        },
+       
     },
     { timestamps: true },
 
